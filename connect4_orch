@@ -1,0 +1,26 @@
+from connect4_logic import *
+from connect4_display import *
+
+
+
+
+def runConnect4():
+	gameLogic = Connect4Logic()
+	display = Connect4Display()
+	
+	pyglet.app.run()
+
+	while gameLogic.has_winner == False:
+		marker_place = int(input('Where would you like to place your marker?: '))
+		gameLogic.execute_turn(marker_place)
+		display.update(gameLogic.position)
+
+		print(gameLogic.position)
+
+	print('Winner is ' + gameLogic.winner)
+
+
+if __name__ == '__main__':
+	runConnect4()
+
+

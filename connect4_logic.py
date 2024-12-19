@@ -1,5 +1,5 @@
 
-class Connect4():
+class Connect4Logic():
     def __init__(self):
         self.position = []
         self.rows = 6
@@ -38,8 +38,6 @@ class Connect4():
             for row in range(0,len(column)):
                 row_check[row] += column[row]
 
-        print(column_check)
-        print(row_check)
 
         for i in row_check:
             if 'AAAA' in i:
@@ -70,5 +68,7 @@ class Connect4():
                     pass
 
     def execute_turn(self, position):
-        self.place_marker(self, position)
-        self.check_for_winner()
+        self.place_marker(position)
+        self.winner = self.check_for_winner()
+
+
