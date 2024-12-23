@@ -11,6 +11,7 @@ class Connect4Display(pyglet.window.Window):
 		super().__init__(*args, **kwargs)
 		self.board_batch = pyglet.graphics.Batch()
 		self.marker_batch = pyglet.graphics.Batch()
+		self.label_batch = pyglet.graphics.Batch()
 		self.GameLogic = Connect4Logic()
 
 	def setup_board(self):
@@ -56,14 +57,42 @@ class Connect4Display(pyglet.window.Window):
 			self.marker = shapes.Circle(x = (100 * column) + 150 + 300, y = (100 * row) + 50 + 20, radius = 45, color = marker_color, batch = self.marker_batch)
 			self.marker_batch.draw()
 
+	def draw_game_labels(self):
+		#Game Title (Static)
+		self.game_title = pyglet.text.Label('Connect 4', font_size = 36, x = 180 , y = 600 + 20 + 40, anchor_x = 'center', anchor_y = 'center', batch = self.label_batch)
+		
+		#Game Status (Changes to Game Over when Game is done)
+		game_status_label = 'In Progress' if self.GameLogic.has_winner == False else 'Game Over'
+		self.game_status = pyglet.text.Label('Game Status: ' + game_status_label, font_size = 18, x = 180 , y = 600 , anchor_x = 'center', anchor_y = 'center', batch = self.label_batch)
+
+		#Turn Label (Calls for Player to place marker)
+		if self.GameLogic.has_winner == False and self.GameLogic.has_slots == True:
+			turn_label = 'Player 1 (Red)' if len(self.GameLogic.position) % 2 == 0 else 'Player 2 (Yellow)'	
+			self.player_turn = pyglet.text.Label(turn_label + " place your marker!", font_size = 14, x = 180 , y = 500 , anchor_x = 'center', anchor_y = 'center', batch = self.label_batch)
+		else:
+			turn_label = 'No more moves!'
+			self.player_turn = pyglet.text.Label(turn_label, font_size = 14, x = 180 , y = 500 , anchor_x = 'center', anchor_y = 'center', batch = self.label_batch)
+
+		#Winner Label 
+		if self.GameLogic.has_winner:
+			winner_label = 'Player 1 Wins!' if self.GameLogic.winner == 'A' else 'Player 2 Wins!'
+			self.winner_msg = pyglet.text.Label(winner_label, font_size = 14, x = 180 , y = 400 , anchor_x = 'center', anchor_y = 'center', batch = self.label_batch)
+
+		self.label_batch.draw()
+
 	def on_draw(self):
 		self.clear()
 		self.setup_board()
+		self.draw_game_labels()
 		self.draw_marker()
 
 	def on_key_press(self, symbol, modifiers):
 		if symbol >= pyglet.window.key._0 and symbol <= pyglet.window.key._9:
-			self.GameLogic.execute_turn(int(chr(symbol)))
+			try:
+				self.GameLogic.execute_turn(int(chr(symbol)))
+			except ValueError as e:
+				pass
+
 
 	def update(self, dt):
 		self.clear()

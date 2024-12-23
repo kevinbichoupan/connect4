@@ -6,6 +6,7 @@ class Connect4Logic():
         self.columns = 7
         self.has_winner = False
         self.winner = None
+        self.has_slots = True
         
     def check_for_available_slots(self):
         available_slots = []
@@ -68,7 +69,14 @@ class Connect4Logic():
                     pass
 
     def execute_turn(self, position):
-        self.place_marker(position)
-        self.winner = self.check_for_winner()
-
+        if self.has_slots == True and self.has_winner == False:
+            try :
+                self.place_marker(position)
+            except ValueError:
+                return ValueError
+            
+            self.winner = self.check_for_winner()
+            self.has_slots = True if len(self.check_for_available_slots()) > 0 else False
+        else:
+            pass
 
